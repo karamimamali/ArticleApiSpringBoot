@@ -7,5 +7,5 @@ public class ArticleDTO {
     private Long id;
     private String title;
     private String content;
-    private Long author_id;
+    private Long authorId;
 }

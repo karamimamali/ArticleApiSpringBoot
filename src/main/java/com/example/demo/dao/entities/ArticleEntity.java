@@ -1,12 +1,13 @@
-package com.example.demo.domain;
+package com.example.demo.dao.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Data
+@Table(name = "ARTICLE_ENTITY")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class Article {
+public class ArticleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
@@ -17,5 +18,5 @@ public class Article {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
-    private Author author;
+    private AuthorEntity authorEntity;
 }
