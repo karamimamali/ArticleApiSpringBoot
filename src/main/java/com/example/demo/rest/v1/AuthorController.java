@@ -8,33 +8,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/v1")
 @RequiredArgsConstructor
 public class AuthorController {
 
     private final IAuthorService authorService;
 
 
-    @GetMapping("/v1/authors")
+    @GetMapping("/authors")
     public List<AuthorDTO> findAll() {
         return authorService.findAll();
     }
 
-    @GetMapping("/v1/authors/{id}")
+    @GetMapping("/authors/{id}")
     public AuthorDTO findById(@PathVariable Long id) {
         return authorService.findById(id);
     }
 
-    @DeleteMapping("/v1/authors/{id}")
+    @DeleteMapping("/authors/{id}")
     public AuthorDTO deleteAuthor(@PathVariable Long id) {
         return authorService.deleteAuthor(id);
     }
 
-    @PostMapping("/v1/authors")
+    @PostMapping("/authors")
     public AuthorDTO createAuthor(@RequestBody AuthorDTO authorDTO) {
         return authorService.createAuthor(authorDTO);
     }
 
-    @PutMapping("/v1/authors/{id}")
+    @PutMapping("/authors/{id}")
     public AuthorDTO updateAuthor(@PathVariable Long id, @RequestBody AuthorDTO authorDTO) {
         return authorService.updateAuthor(authorDTO, id);
     }
