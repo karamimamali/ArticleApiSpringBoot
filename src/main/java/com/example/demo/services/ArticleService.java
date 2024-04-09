@@ -5,10 +5,10 @@ import com.example.demo.dao.entities.AuthorEntity;
 import com.example.demo.dao.repositories.ArticleRepository;
 import com.example.demo.dao.repositories.AuthorRepository;
 import com.example.demo.dto.ArticleDTO;
+import com.example.demo.exception.BadRequestError;
+import com.example.demo.exception.NotFoundError;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +32,12 @@ public class ArticleService implements IArticleService {
 
     @Override
     public ArticleDTO findById(Long id) {
-        return articleRepository
-                .findById(id)
+        return articleRepository.findById(id)
                 .filter(article -> !article.getIsDeleted())
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found with id: " + id));
+                .orElseThrow(() -> new NotFoundError("not-found-error", "Article not found with id: " + id));
     }
+
 
 
     @Override
@@ -48,7 +48,7 @@ public class ArticleService implements IArticleService {
                     articleRepository.save(articleEntity);
                     return convertToDTO(articleEntity);
                 })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found with id: " + id));
+                .orElseThrow(() -> new NotFoundError("not-found-error", "Article not found with id: " + id));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ArticleService implements IArticleService {
                 .map(this::convertToEntity)
                 .map(articleRepository::save)
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Article cannot be null"));
+                .orElseThrow(() -> new BadRequestError("bad-request-error", "Article cannot be null"));
     }
 
     @Override
@@ -69,8 +69,9 @@ public class ArticleService implements IArticleService {
                     return articleRepository.save(articleEntity);
                 })
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found with id: " + id));
+                .orElseThrow(() -> new NotFoundError("not-found-error", "Article not found with id: " + id));
     }
+
 
     private ArticleEntity convertToEntity(ArticleDTO articleDTO) {
         ArticleEntity articleEntity = new ArticleEntity();

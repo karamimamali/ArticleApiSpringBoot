@@ -3,10 +3,10 @@ package com.example.demo.services;
 import com.example.demo.dao.entities.AuthorEntity;
 import com.example.demo.dao.repositories.AuthorRepository;
 import com.example.demo.dto.AuthorDTO;
+import com.example.demo.exception.BadRequestError;
+import com.example.demo.exception.NotFoundError;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,18 +33,18 @@ public class AuthorService implements IAuthorService {
                 .findById(id)
                 .filter(author -> !author.getIsDeleted())
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found with id: " + id));
+                .orElseThrow(() -> new NotFoundError("not-found-error", "Author not found with id: " + id));
     }
 
     @Override
     public AuthorDTO deleteAuthor(Long id) {
         return authorRepository.findById(id)
-                .map(articleEntity -> {
-                    articleEntity.setIsDeleted(true);
-                    authorRepository.save(articleEntity);
-                    return convertToDTO(articleEntity);
+                .map(authorEntity -> {
+                    authorEntity.setIsDeleted(true);
+                    authorRepository.save(authorEntity);
+                    return convertToDTO(authorEntity);
                 })
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found with id: " + id));
+                .orElseThrow(() -> new NotFoundError("not-found-error", "Author not found with id: " + id));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class AuthorService implements IAuthorService {
                 .map(this::convertToEntity)
                 .map(authorRepository::save)
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Author cannot be null"));
+                .orElseThrow(() -> new BadRequestError("bad-request-error", "Author cannot be null"));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class AuthorService implements IAuthorService {
                     return authorRepository.save(authorEntity);
                 })
                 .map(this::convertToDTO)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Author not found with id: " + id));
+                .orElseThrow(() -> new NotFoundError("not-found-error", "Author not found with id: " + id));
     }
 
 
